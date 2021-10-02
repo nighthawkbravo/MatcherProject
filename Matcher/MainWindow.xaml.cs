@@ -35,6 +35,8 @@ namespace Matcher
         private int numOfRounds = 1;
         private int numOfPlayers = 0;
 
+        private int counterLimit;
+
         private string currentSetting = "Random";
 
         private Random rnd;
@@ -59,6 +61,11 @@ namespace Matcher
 
         private void UploadButton(object sender, RoutedEventArgs e)
         {
+            if (Players.Count != 0)
+            {
+                Players.Clear();
+                numOfPlayers = 0;
+            }
             OpenFileDialog op = new OpenFileDialog();
             op.Title = "Select a text file";
             op.Filter = "Text file (*.txt)|*.txt;";
@@ -67,7 +74,7 @@ namespace Matcher
                 UpFileName.Text = $"{op.FileName}";
                 PlayersListStrings = File.ReadAllText(op.FileName);
             }
-            else return;            
+            else return;
 
             //StringBuilder sb;
             StringReader sr = new StringReader(PlayersListStrings);
@@ -82,10 +89,13 @@ namespace Matcher
 
                 Player p = new Player(line.Substring(0, firstSpace), line.Substring(firstSpace + 1, SecondSpace - firstSpace), line.Substring(firstPar + 1, SecondPar - SecondSpace - 2));
                 Players.Add(p);
-                tmpPlayers.Add(p);
                 ++numOfPlayers;
                 line = sr.ReadLine();
             }
+            CheckNumOfRoundsAfterUpload();
+
+            PlayerCount.Text = numOfPlayers.ToString();
+
             string all = $"List of players ({numOfPlayers}):\n";
             int count = 0;
             foreach (var p in Players)
@@ -96,12 +106,12 @@ namespace Matcher
             }
             all += "\nPlease confirm that the list is correct.";
             MessageBox.Show(all);
-
         }
 
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
-            foreach(var p in Players)
+            counterLimit = numOfPlayers * numOfRounds;
+            foreach (var p in Players)
             {
                 p.SetOpponents(numOfRounds);
             }
@@ -125,12 +135,25 @@ namespace Matcher
             System.Windows.Application.Current.Shutdown();
         }
 
+        private void CheckNumOfRoundsAfterUpload()
+        {
+            int num;
+            bool b = Int32.TryParse(NumberOfRoundsBox.Text, out num);
+
+            if (b && num > 0 && (numOfPlayers > num))
+            {
+                NumberOfRoundsBox.Background = (Brush)bc.ConvertFrom(lightPurple);
+                numOfRounds = num;
+            }
+            else NumberOfRoundsBox.Background = (Brush)bc.ConvertFrom(mylightRed);
+        }
+
         private void CheckNumOfRounds(object sender, TextChangedEventArgs e)
         {
             int num;
             bool b = Int32.TryParse(NumberOfRoundsBox.Text, out num);
 
-            if (b && num > 0)
+            if (b && num > 0 && (numOfPlayers > num))
             {
                 NumberOfRoundsBox.Background = (Brush)bc.ConvertFrom(lightPurple);
                 numOfRounds = num;
@@ -145,6 +168,14 @@ namespace Matcher
 
         private void AssignRandomly()
         {
+            int counter = 0;
+
+            tmpPlayers.Clear();
+            foreach (var p in Players)
+            {
+                tmpPlayers.Add(p);
+            }
+
             for (int i = 0; i < numOfRounds; ++i)
             {
                 if(tmpPlayers.Count == 0)
@@ -160,6 +191,7 @@ namespace Matcher
                     int r1;
                     int r2;
                     bool b;
+                    
                     do
                     {
                         r1 = rnd.Next(0, tmpPlayers.Count - 1);
@@ -169,7 +201,11 @@ namespace Matcher
                             r2 = rnd.Next(0, tmpPlayers.Count);
                         }
                         b = !(tmpPlayers[r1].TryAssigning(tmpPlayers[r2]) && tmpPlayers[r2].TryAssigning(tmpPlayers[r1]));
+                        ++counter;
+                        if (counter > counterLimit) break;
                     } while (b);
+
+                    if (counter > counterLimit) break;
 
                     Player p1 = tmpPlayers[r1];
                     Player p2 = tmpPlayers[r2];
@@ -178,8 +214,22 @@ namespace Matcher
                     tmpPlayers.Remove(p2);
 
                 }
+                if (counter > counterLimit) break;
             }
-            PrintPairings();
+            if (counter > counterLimit)
+            {
+                ClearPairings();
+                AssignRandomly();
+            }
+            else PrintPairings();
+        }
+
+        private void ClearPairings()
+        {
+            foreach(var p in Players)
+            {
+                p.opponents.Clear();
+            }
         }
 
         private void PrintPairings()
@@ -193,16 +243,5 @@ namespace Matcher
             all += "\nDONE";
             MessageBox.Show(all);
         }
-
-        //private bool TryAssigning(Player p1, Player p2)
-        //{
-        //    if ((!p1.opponents.Contains(p2) && p1.opponents.Count < p1.opponents.Capacity) && (!p2.opponents.Contains(p1) && p2.opponents.Count < p2.opponents.Capacity))
-        //    {
-        //        p1.opponents.Add(p2);
-        //        p2.opponents.Add(p1);
-        //        return true;
-        //    }
-        //    else return false;
-        //}
     }
 }
