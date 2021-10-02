@@ -8,7 +8,8 @@
         Title="Player Matcher" Height="650" Width="1200" 
         ResizeMode="NoResize"
         WindowStyle="None"
-        Background="#181735">
+        Background="#181735"
+        Icon="Images/Match2.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -115,7 +116,7 @@
                            FontFamily="Fonts/#Dosis"
                            TextWrapping="Wrap"
                            Margin="0,2,0,0"/>
-                <TextBlock Text="Global Faction - Assigns randomly without duplicates that do not share the same global faction."
+                <!--<TextBlock Text="Global Faction - Assigns randomly without duplicates that do not share the same global faction."
                            Foreground="White"
                            FontSize="12"
                            FontWeight="Medium"
@@ -128,7 +129,7 @@
                            FontWeight="Medium"
                            FontFamily="Fonts/#Dosis"
                            TextWrapping="Wrap"
-                           Margin="0,2,0,0"/>
+                           Margin="0,2,0,0"/>-->
                 <TextBlock Text="4. Run the program!"
                            Foreground="White"
                            FontSize="20"
@@ -200,8 +201,8 @@
                         </Style>
                     </ComboBox.ItemContainerStyle>
                     <ComboBoxItem IsSelected="True" Content="Random"/>
-                    <ComboBoxItem Content="Global faction"/>
-                    <ComboBoxItem Content="Sub faction"/>
+                    <!--<ComboBoxItem Content="Global faction"/>
+                    <ComboBoxItem Content="Sub faction"/>-->
                 </ComboBox>
 
                 <Button Content="Start"

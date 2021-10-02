@@ -108,7 +108,6 @@ namespace Matcher
             all += "\nPlease confirm that the list is correct.";
             MessageBox.Show(all);
         }
-
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
             if (!canIRun)
@@ -135,12 +134,10 @@ namespace Matcher
                     break;
             }
         }
-
         private void ButtonClose(object sender, RoutedEventArgs e)
         {
             System.Windows.Application.Current.Shutdown();
         }
-
         private void CheckNumOfRounds(object sender, TextChangedEventArgs e)
         {
             int num;
@@ -158,7 +155,6 @@ namespace Matcher
                 canIRun = false;
             }
         }
-
         private void AssignmentChange(object sender, SelectionChangedEventArgs e)
         {
             if(cbi != null) currentSetting = cbi.Content.ToString();
@@ -219,7 +215,7 @@ namespace Matcher
                 ClearPairings();
                 AssignRandomly();
             }
-            else PrintPairings();
+            else SavePairings();
         }
 
         private void ClearPairings()
@@ -229,7 +225,6 @@ namespace Matcher
                 p.opponents.Clear();
             }
         }
-
         private void PrintPairings()
         {
             string all = "Pairings:\n";
@@ -241,5 +236,20 @@ namespace Matcher
             all += "\nDONE";
             MessageBox.Show(all);
         }
+        private void SavePairings()
+        {
+            string all = "Pairings:\n";
+
+            foreach (var p in Players)
+            {
+                all += $"\t{p.PrintWithOpponents()}\n";
+            }
+            all += "\nDONE";
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Text file (*.txt)|*.txt";
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK) File.WriteAllText(saveFileDialog.FileName, all);
+        }
+
+
     }
 }
