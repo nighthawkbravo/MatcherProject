@@ -8,7 +8,7 @@
         Title="Player Matcher" Height="650" Width="1200" 
         ResizeMode="NoResize"
         WindowStyle="None"
-        Background="#181735">    
+        Background="#181735">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
@@ -41,13 +41,15 @@
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
                        FontFamily="Fonts/#Dosis"
-                       FontWeight="Medium"/> <!-- Left empty for the futre-->
+                       FontWeight="Medium"/>
+            <!-- Left empty for the futre-->
             <TextBlock Text=""
                        Foreground="LightGray" 
                        Grid.Column="2"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       FontFamily="Fonts/#Dosis"/> <!-- Left empty for the futre-->
+                       FontFamily="Fonts/#Dosis"/>
+            <!-- Left empty for the futre-->
             <Button Content="Close"
                     Foreground="White"
                     FontSize="12"
@@ -91,32 +93,54 @@
                                FontWeight="Medium" FontSize="30" FontFamily="Fonts/#Dosis"
                                Margin="10,0,0,0"/>
                 </StackPanel>
-                <TextBlock Text="Upload a text file with the players names and their factions."
+                <TextBlock Text="1. Upload a text file with the players names and their factions."
                            Foreground="White"
                            FontSize="20"
                            FontWeight="Medium"
                            FontFamily="Fonts/#Dosis"/>
-                <TextBlock Text="Select the settings of your choosing."
+                <TextBlock Text="2. Select the number of rounds."
                            Foreground="White"
                            FontSize="20"
                            FontWeight="Medium"
                            FontFamily="Fonts/#Dosis"/>
-                <TextBlock Text="Run the program!"
+                <TextBlock Text="3. Select the type of randomization."
                            Foreground="White"
                            FontSize="20"
                            FontWeight="Medium"
                            FontFamily="Fonts/#Dosis"/>
-                <TextBlock Text="The player matcher pairs players according to a list downloaded."
+                <TextBlock Text="Random - Assigns randomly without duplicates."
                            Foreground="White"
                            FontSize="12"
                            FontWeight="Medium"
                            FontFamily="Fonts/#Dosis"
                            TextWrapping="Wrap"
+                           Margin="0,2,0,0"/>
+                <TextBlock Text="Global Faction - Assigns randomly without duplicates that do not share the same global faction."
+                           Foreground="White"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Fonts/#Dosis"
+                           TextWrapping="Wrap"
+                           Margin="0,2,0,0"/>
+                <TextBlock Text="Sub Faction - Assigns randomly without duplicates that do not share the same faction name."
+                           Foreground="White"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Fonts/#Dosis"
+                           TextWrapping="Wrap"
+                           Margin="0,2,0,0"/>
+                <TextBlock Text="4. Run the program!"
+                           Foreground="White"
+                           FontSize="20"
+                           FontWeight="Medium"
+                           FontFamily="Fonts/#Dosis"
                            Margin="0,10,0,0"/>
+                
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
-                
-                <Button Content="Upload Players"
+
+                <Button Name="UploaderButton"
+                        Content="Upload Players"
                         Foreground="White"
                         FontSize="14"
                         FontWeight="Medium" Click="UploadButton">
@@ -143,11 +167,48 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-                
+                <TextBlock Text="Number of Rounds:"
+                           FontWeight="Medium"
+                           FontSize="15"
+                           FontFamily="Fonts/#Dosis"
+                           Foreground="White"
+                           Width="115"
+                           VerticalAlignment="Center"
+                           Margin="10,0,0,0">
+
+                </TextBlock>
+                <TextBox Name="NumberOfRoundsBox"
+                         Background="#383660"
+                         Foreground="LightGray"
+                         Width="35"
+                         FontSize="15"
+                         TextAlignment="Center"
+                         Margin="5,0,0,0"
+                         Text="1" TextChanged="CheckNumOfRounds">
+                </TextBox>
+
+                <ComboBox Name="AssignmentBox" 
+                          Margin="10,0,0,0" Background="#FF181735"
+                          FontFamily="Fonts/#Dosis" FontWeight="Medium" 
+                          FontSize="15" VerticalAlignment="Center" SelectionChanged="AssignmentChange">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <!--<Setter Property="Background" Value="#FF181735"/>-->
+                            <!--<Setter Property="Foreground" Value="White"/>-->
+                            <Setter Property="FontFamily" Value="Fonts/#Dosis"/>
+                            <Setter Property="FontWeight" Value="Medium"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                    <ComboBoxItem IsSelected="True" Content="Random"/>
+                    <ComboBoxItem Content="Global faction"/>
+                    <ComboBoxItem Content="Sub faction"/>
+                </ComboBox>
+
                 <Button Content="Start"
                         Foreground="White"
                         FontSize="14"
-                        FontWeight="Medium" Click="ButtonClick">
+                        FontWeight="Medium" Click="ButtonClick"
+                        Margin="10,0,0,0">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="TextElement.FontFamily" Value="Fonts/#Dosis"/>
@@ -170,22 +231,40 @@
                             </Border>
                         </ControlTemplate>
                     </Button.Template>
-                </Button>                
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Selected File: "
+                           Foreground="White"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Fonts/#Dosis"
+                           TextWrapping="Wrap"
+                           Margin="0,10,0,0"/>
+                <TextBlock Name="UpFileName"
+                           Text="None"
+                           Foreground="White"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Fonts/#Dosis"
+                           TextWrapping="Wrap"
+                           Margin="5,10,0,0"/>
             </StackPanel>
         </StackPanel>
+
         <Grid Grid.Column="1"
               Grid.RowSpan="2"
               Margin="160, -365, -610, 85"
               Panel.ZIndex="-1">
-            
+
             <Grid.RenderTransform>
                 <RotateTransform Angle="40"/>
             </Grid.RenderTransform>
 
             <StackPanel Orientation="Horizontal"
                         Margin="-350, 250, -255, -250">
-                
-                <StackPanel>                
+
+                <StackPanel>
                     <Border Width="700"
                             Height="35"
                             Background="#3DDDC2"
@@ -200,7 +279,7 @@
                             Height="35"
                             Background="#383660"
                             Margin="75,15,0,0"
-                            CornerRadius="20"/>                
+                            CornerRadius="20"/>
                 </StackPanel>
 
                 <StackPanel>
@@ -221,6 +300,6 @@
                             CornerRadius="20"/>
                 </StackPanel>
             </StackPanel>
-        </Grid>        
+        </Grid>
     </Grid>
 </Window>
