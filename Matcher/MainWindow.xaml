@@ -249,6 +249,22 @@
                            FontFamily="Fonts/#Dosis"
                            TextWrapping="Wrap"
                            Margin="5,10,0,0"/>
+
+                <TextBlock Text="Player Count: "
+                           Foreground="White"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Fonts/#Dosis"
+                           TextWrapping="Wrap"
+                           Margin="50,10,0,0"/>
+                <TextBlock Name="PlayerCount"
+                           Text="0"
+                           Foreground="White"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Fonts/#Dosis"
+                           TextWrapping="Wrap"
+                           Margin="5,10,0,0"/>
             </StackPanel>
         </StackPanel>
 
