@@ -34,8 +34,8 @@ namespace Matcher
 
         private int numOfRounds = 1;
         private int numOfPlayers = 0;
-
         private int counterLimit;
+        private bool canIRun = false;
 
         private string currentSetting = "Random";
 
@@ -92,7 +92,8 @@ namespace Matcher
                 ++numOfPlayers;
                 line = sr.ReadLine();
             }
-            CheckNumOfRoundsAfterUpload();
+            
+            CheckNumOfRounds(null, null);
 
             PlayerCount.Text = numOfPlayers.ToString();
 
@@ -110,6 +111,11 @@ namespace Matcher
 
         private void ButtonClick(object sender, RoutedEventArgs e)
         {
+            if (!canIRun)
+            {
+                MessageBox.Show("ERROR");
+                return;
+            }
             counterLimit = numOfPlayers * numOfRounds;
             foreach (var p in Players)
             {
@@ -135,19 +141,6 @@ namespace Matcher
             System.Windows.Application.Current.Shutdown();
         }
 
-        private void CheckNumOfRoundsAfterUpload()
-        {
-            int num;
-            bool b = Int32.TryParse(NumberOfRoundsBox.Text, out num);
-
-            if (b && num > 0 && (numOfPlayers > num))
-            {
-                NumberOfRoundsBox.Background = (Brush)bc.ConvertFrom(lightPurple);
-                numOfRounds = num;
-            }
-            else NumberOfRoundsBox.Background = (Brush)bc.ConvertFrom(mylightRed);
-        }
-
         private void CheckNumOfRounds(object sender, TextChangedEventArgs e)
         {
             int num;
@@ -157,8 +150,13 @@ namespace Matcher
             {
                 NumberOfRoundsBox.Background = (Brush)bc.ConvertFrom(lightPurple);
                 numOfRounds = num;
+                canIRun = true;
             }
-            else NumberOfRoundsBox.Background = (Brush)bc.ConvertFrom(mylightRed);
+            else
+            {
+                NumberOfRoundsBox.Background = (Brush)bc.ConvertFrom(mylightRed);
+                canIRun = false;
+            }
         }
 
         private void AssignmentChange(object sender, SelectionChangedEventArgs e)
