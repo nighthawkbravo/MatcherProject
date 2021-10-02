@@ -145,39 +145,52 @@ namespace Matcher
 
         private void AssignRandomly()
         {
+            List<(bool, (Player, Player))> pairs = new List<(bool, (Player, Player))>();
             for (int i = 0; i < numOfRounds; ++i)
             {
-                if(tmpPlayers.Count == 0)
+                do
                 {
-                    foreach(var p in Players)
+                    pairs.Clear();
+
+                    if (tmpPlayers.Count == 0)
                     {
-                        tmpPlayers.Add(p);
-                    }
-                }
-                int count = Players.Count;
-                for (int j = 0; j < count / 2; ++j)
-                {
-                    int r1;
-                    int r2;
-                    bool b;
-                    do
-                    {
-                        r1 = rnd.Next(0, tmpPlayers.Count - 1);
-                        r2 = rnd.Next(0, tmpPlayers.Count - 1);
-                        while (r2 == r1)
+                        foreach (var p in Players)
                         {
-                            r2 = rnd.Next(0, tmpPlayers.Count);
+                            tmpPlayers.Add(p);
                         }
-                        b = !(tmpPlayers[r1].TryAssigning(tmpPlayers[r2]) && tmpPlayers[r2].TryAssigning(tmpPlayers[r1]));
-                    } while (b);
+                    }
+                    int count = Players.Count;
+                    for (int j = 0; j < count / 2; ++j)
+                    {
+                        int r1;
+                        int r2;
 
-                    Player p1 = tmpPlayers[r1];
-                    Player p2 = tmpPlayers[r2];
+                        (bool, (Player, Player)) res;
+                        int counter = 0;
+                        do
+                        {
+                            r1 = rnd.Next(0, tmpPlayers.Count - 1);
+                            r2 = rnd.Next(0, tmpPlayers.Count - 1);
+                            while (r2 == r1)
+                            {
+                                r2 = rnd.Next(0, tmpPlayers.Count);
+                            }
 
-                    tmpPlayers.Remove(p1);
-                    tmpPlayers.Remove(p2);
+                            res = TryAssigning(tmpPlayers[r1], tmpPlayers[r2]);
+                            ++counter;
+                        } while (!res.Item1 || counter > 20);
+                        pairs.Add(res);
 
-                }
+                        Player p1 = tmpPlayers[r1];
+                        Player p2 = tmpPlayers[r2];
+
+                        tmpPlayers.Remove(p1);
+                        tmpPlayers.Remove(p2);
+
+                    }
+                } while (!CheckPairs(pairs));
+
+                ActuallyAssign(pairs);
             }
             PrintPairings();
         }
@@ -193,16 +206,30 @@ namespace Matcher
             all += "\nDONE";
             MessageBox.Show(all);
         }
+        private bool CheckPairs(List<(bool, (Player, Player))> p)
+        {
+            foreach(var e in p)
+            {
+                if (e.Item1 == false) return false;
+            }
+            return true;
+        }
+        private (bool, (Player, Player)) TryAssigning(Player p1, Player p2)
+        {
+            if ((!p1.opponents.Contains(p2) && p1.opponents.Count < p1.opponents.Capacity) && (!p2.opponents.Contains(p1) && p2.opponents.Count < p2.opponents.Capacity))
+            {
+                return (true, (p1, p2));
+            }
+            return (false, (p1, p2));
+        }
 
-        //private bool TryAssigning(Player p1, Player p2)
-        //{
-        //    if ((!p1.opponents.Contains(p2) && p1.opponents.Count < p1.opponents.Capacity) && (!p2.opponents.Contains(p1) && p2.opponents.Count < p2.opponents.Capacity))
-        //    {
-        //        p1.opponents.Add(p2);
-        //        p2.opponents.Add(p1);
-        //        return true;
-        //    }
-        //    else return false;
-        //}
+        private void ActuallyAssign(List<(bool, (Player, Player))> pairs)
+        {
+            foreach(var p in pairs)
+            {
+                p.Item2.Item1.opponents.Add(p.Item2.Item2);
+                p.Item2.Item2.opponents.Add(p.Item2.Item1);
+            }
+        }
     }
 }

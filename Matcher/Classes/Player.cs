@@ -26,16 +26,6 @@ namespace Matcher.Classes
             opponents = new List<Player>(op);
         }
 
-        public bool TryAssigning(Player p)
-        {
-            if (!opponents.Contains(p) && opponents.Count < opponents.Capacity)
-            {
-                opponents.Add(p);
-                return true;
-            }
-            else return false;
-        }
-
         public string Print()
         {
             return $"{firstName} {lastName} ({faction})";
