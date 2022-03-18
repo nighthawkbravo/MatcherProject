@@ -93,6 +93,12 @@
                                VerticalAlignment="Center"
                                FontWeight="Medium" FontSize="30" FontFamily="Fonts/#Dosis"
                                Margin="10,0,0,0"/>
+                    <TextBlock Text="By Lucas Lisznianski" 
+                               Foreground="White"
+                               VerticalAlignment="Bottom"
+                               FontSize="15" FontFamily="Fonts/#Dosis"
+                               Margin="10,0,0,22"/>
+                    
                 </StackPanel>
                 <TextBlock Text="1. Upload a text file with the players names and their factions."
                            Foreground="White"
@@ -130,12 +136,19 @@
                            FontFamily="Fonts/#Dosis"
                            TextWrapping="Wrap"
                            Margin="0,2,0,0"/>-->
-                <TextBlock Text="4. Run the program!"
+                <TextBlock Text="4. Run the program by pressing start."
                            Foreground="White"
                            FontSize="20"
                            FontWeight="Medium"
                            FontFamily="Fonts/#Dosis"
                            Margin="0,10,0,0"/>
+                <TextBlock Text="When prompted, give a name for the file to save the results in."
+                           Foreground="White"
+                           FontSize="12"
+                           FontWeight="Medium"
+                           FontFamily="Fonts/#Dosis"
+                           TextWrapping="Wrap"
+                           Margin="0,2,0,0"/>
                 
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
